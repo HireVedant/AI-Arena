@@ -1,14 +1,195 @@
-# AI-Arena
-AI Arena is a multi-model AI response aggregation platform that allows users to interact with multiple large language models through a single unified interface. The system is designed to compare, combine, and evaluate responses from different AI providers such as Google Gemini, Groq (LLaMA-based models), and Mistral, giving users a richer and more reliable output experience.
+# ⬡ AI Arena — Multi-Model AI Comparison App
 
-The backend is built using Flask and follows a modular architecture where each AI provider is implemented as an independent service. A central AI dispatcher handles incoming user queries and routes them to selected models. The system supports parallel execution of API calls to reduce latency and improve performance, ensuring faster response times even when multiple models are queried simultaneously. A final verdict layer processes the collected responses and generates a consolidated answer when required.
+> Ask once. Compare Gemini, Groq, and Mistral side-by-side. Get a synthesized verdict.
 
-AI Arena is designed with scalability and extensibility in mind. New AI providers can be integrated easily by adding a new service module without modifying the core system. The project also includes proper error handling, fallback mechanisms, and timeout management to ensure stability even when external APIs fail or become unavailable.
+---
 
-On the frontend, the application provides a simple and clean chat-based interface where users can submit queries and view responses in real time. The UI is designed to be minimal and responsive, focusing on usability and clarity. Future enhancements include user authentication, chat history storage, and personalized AI interaction tracking.
+## 📁 Project Structure
 
-Key features of the system include multi-AI querying, parallel response processing, intelligent response aggregation, and modular service-based architecture. The goal of AI Arena is to provide a comparative AI experience where users can see how different models respond to the same prompt and optionally receive a unified best-answer output.
+```
+ai-arena/
+├── backend/
+│   ├── app.py                    # Flask entry point
+│   ├── requirements.txt
+│   ├── .env.example
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   └── ask.py                # POST /ask endpoint
+│   └── services/
+│       ├── __init__.py
+│       ├── ai_dispatcher.py      # Parallel model execution
+│       ├── model_gemini.py       # Gemini service (mock + real stub)
+│       ├── model_groq.py         # Groq service (mock + real stub)
+│       ├── model_mistral.py      # Mistral service (mock + real stub)
+│       └── summarizer.py         # Final verdict generator
+│
+└── frontend/
+    ├── index.html
+    ├── vite.config.js
+    ├── package.json
+    └── src/
+        ├── main.jsx              # React entry
+        ├── App.jsx               # Root component + state
+        ├── api.js                # Fetch wrapper
+        ├── hooks/
+        │   ├── useTheme.js       # Dark/light theme state
+        │   └── useHistory.js     # Search history state
+        ├── components/
+        │   ├── LandingPage.jsx   # Animated intro screen
+        │   ├── Header.jsx        # Nav + theme toggle
+        │   ├── Sidebar.jsx       # History panel
+        │   ├── QueryInput.jsx    # Search bar + model checkboxes
+        │   ├── ResponseCard.jsx  # Individual AI response
+        │   └── SummaryPanel.jsx  # Final verdict display
+        └── styles/
+            └── global.css        # CSS variables, animations, theme
+```
 
-This project is ideal for demonstrating skills in backend development, API integration, asynchronous processing, and system design. It also serves as a foundation for building more advanced AI orchestration systems in the future, including smart routing, cost optimization, and AI evaluation frameworks.
+---
 
-Overall, AI Arena is a powerful experimentation platform for exploring multi-model AI interactions in a structured and scalable way.
+## ▶️ Setup Instructions
+
+### 1. Clone / Download the project
+```bash
+git clone <your-repo-url>
+cd ai-arena
+```
+
+### 2. Backend Setup (Python / Flask)
+
+```bash
+cd backend
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate        # macOS/Linux
+# venv\Scripts\activate         # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Copy .env and add your keys (optional for mock mode)
+cp .env.example .env
+
+# Run the Flask server
+python app.py
+# Server starts at: http://localhost:5000
+```
+
+### 3. Frontend Setup (React / Vite)
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+# App opens at: http://localhost:3000
+```
+
+### 4. Open the App
+Navigate to **http://localhost:3000** in your browser.
+
+---
+
+## 🔗 API Reference
+
+### `POST /ask`
+
+**Request:**
+```json
+{
+  "query": "What is the best way to learn machine learning?",
+  "models": ["gemini", "groq", "mistral"]
+}
+```
+
+**Response:**
+```json
+{
+  "responses": {
+    "gemini": {
+      "text": "Gemini's Perspective: That's a thoughtful question...",
+      "error": null
+    },
+    "groq": {
+      "text": "Groq (LLaMA) Response: Interesting query...",
+      "error": null
+    },
+    "mistral": {
+      "text": "Mistral's Analysis: Regarding...",
+      "error": null
+    }
+  },
+  "summary": "## Final Verdict\n\nBased on 3 models..."
+}
+```
+
+**Error Response (400):**
+```json
+{ "error": "query is required" }
+```
+
+---
+
+## 🔑 Adding Real API Keys
+
+### Gemini
+1. Get key: https://aistudio.google.com/app/apikey
+2. `pip install google-generativeai`
+3. In `.env`: `GEMINI_API_KEY=your_key`
+4. Uncomment real API code in `services/model_gemini.py`
+
+### Groq
+1. Get key: https://console.groq.com
+2. `pip install groq`
+3. In `.env`: `GROQ_API_KEY=your_key`
+4. Uncomment real API code in `services/model_groq.py`
+
+### Mistral
+1. Get key: https://console.mistral.ai
+2. `pip install mistralai`
+3. In `.env`: `MISTRAL_API_KEY=your_key`
+4. Uncomment real API code in `services/model_mistral.py`
+
+---
+
+## 🎨 Features
+
+| Feature | Status |
+|---|---|
+| Dark / Light theme toggle | ✅ |
+| Animated landing page | ✅ |
+| Model selection checkboxes | ✅ |
+| Parallel API calls (threading) | ✅ |
+| Response cards with fade-in | ✅ |
+| Final verdict summary | ✅ |
+| Search history sidebar | ✅ |
+| Loading skeleton cards | ✅ |
+| Error handling (front + back) | ✅ |
+| Responsive layout | ✅ |
+
+---
+
+## 🧩 Extending the Project
+
+**Add a new model:**
+1. Create `backend/services/model_newai.py`
+2. Add it to `MODEL_REGISTRY` in `ai_dispatcher.py`
+3. Add its chip to `MODELS` array in `QueryInput.jsx`
+4. Add its meta to `MODEL_META` in `ResponseCard.jsx`
+
+**Add response streaming:**
+- Use Flask's `Response` with `stream_with_context`
+- Use `EventSource` or `fetch` with `ReadableStream` on frontend
+
+**Add persistent history:**
+- Replace `useHistory` state with `localStorage` calls
+- Or add a SQLite DB to Flask backend
+
+**Deploy:**
+- Backend: Render, Railway, or Fly.io (free tier)
+- Frontend: Vercel or Netlify
+- Update `API_BASE` in `frontend/src/api.js` to production URL
